@@ -1,0 +1,210 @@
+关芳瑜
+
+#猜数字
+import random
+print('猜数字游戏开始')
+num=random.randint(1,101)
+for i in range(1,4):
+    guess = int(input("您猜数字是什么？(输入0-100的数字):"))
+    if guess < num:
+        print("您猜小了")
+        continue
+    elif guess > num:
+        print("您猜大了")
+        continue
+    break
+if guess == num:
+    print("您猜对了！")
+else:
+    print("Game over!")
+
+#猜拳
+import random
+# random产生随机值或者从给定值中随机选择
+
+# 可选择的选项
+options = ["石头", "剪子", "布"]
+score1=0
+score2=0
+for i in range(1,4):
+    print("欢迎来到石头剪子布游戏！")
+    print("请从以下选项中选择：")
+    for i, option in enumerate(options):
+        print(f"{i + 1}. {option}")
+
+# 玩家选择
+    player_choice = int(input("请输入你的选择（1-3）：")) - 1
+
+# 计算机随机选择
+    computer_choice = random.randint(0, 2)
+
+    print(f"\n你选择了：{options[player_choice]}")
+    print(f"计算机选择了：{options[computer_choice]}")
+
+# 判断胜负
+    if player_choice == computer_choice:
+        print("平局！")
+    elif (player_choice == 0 and computer_choice == 1) or \
+         (player_choice == 1 and computer_choice == 2) or \
+        (player_choice == 2 and computer_choice == 0):
+        print("你赢了！🎉")
+        score1+=1
+    else:
+        print("你输了！😢")
+        score2+=1
+print("您的得分是：",score1)
+print("计算机的得分是：",score2)
+if(score1>score2):
+    print("您是最后的赢家！")
+if(score1<score2):
+    print("很遗憾，继续努力吧！")
+
+#获取网页内容
+from urllib.request import urlopen
+
+def func():
+    content = urlopen('https://myip.ipip.net').read().decode('utf-8')
+    def inner():
+        print(content)
+    return inner
+
+f = func()
+for i in range(5):
+    f()
+
+print(f.__code__.co_freevars)
+
+#案例三
+db = {}
+with open('E:\my tests\pythonhomework\sql.txt', 'r', encoding='utf-8')as f:
+    data = f.readlines()
+    print(data)
+    for i in data:
+        ret = i.strip().split("|")
+        # ret = ["张三", "123"]
+        print(ret)
+        db[ret[0]] = ret[1]
+        # db["张三"] = "123"
+        print(db)
+i=0
+while True:
+    print("是否注册？")
+    choise=input()
+    if choise=="是":
+        name=input("请输入用户名：")
+        db[name]=name
+        newword=input("请输入密码：")
+        db[name]=newword
+    if choise=='否':
+        username = input("请输入用户名：")
+
+    if username in db:
+        password = input("请输入密码：")
+        if password == db[username]:
+            print("登录成功")
+            break
+        else:
+            print("密码错误登录失败")
+            i=i+1
+    else:
+        print("用户名不存在")
+    if(i==3):
+        print("封号")
+        break
+
+案例三函数版
+import json
+from pathlib import Path
+
+def load_data(file_path):
+    """从文件加载用户数据"""
+    try:
+        if file_path.exists():
+            with open(file_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {}
+    except Exception as e:
+        print(f"读取文件错误: {e}")
+        return {}
+
+def save_data(file_path, data):
+    """将用户数据保存到文件"""
+    try:
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"保存文件错误: {e}")
+
+def register_user(db):
+    """处理用户注册"""
+    name = input("请输入用户名：").strip()
+    if not name:
+        print("用户名不能为空")
+        return False
+    if name in db:
+        print("用户名已存在")
+        return False
+    password = input("请输入密码：").strip()
+    if not password:
+        print("密码不能为空")
+        return False
+    db[name] = password
+    print(f"用户 {name} 注册成功")
+    return True
+
+def login_user(db, max_attempts=3):
+    """处理用户登录"""
+    attempts = 0
+    while attempts < max_attempts:
+        username = input("请输入用户名：").strip()
+        if username not in db:
+            print("用户名不存在")
+            attempts += 1
+            continue
+        password = input("请输入密码：").strip()
+        if password == db[username]:
+            print("登录成功")
+            return True
+        else:
+            print("密码错误")
+            attempts += 1
+    print(f"尝试次数过多，账号已锁定")
+    return False
+
+def main():
+    """主函数，程序入口点"""
+    file_path = Path(r'E:\my tests\pythonhomework\sql.txt')
+    
+    # 确保目录存在
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # 加载数据库
+    db = load_data(file_path)
+    
+    while True:
+        print("\n欢迎使用用户系统")
+        print("1. 注册")
+        print("2. 登录")
+        print("3. 退出")
+        
+        choice = input("请选择操作 (1-3): ").strip()
+        
+        if choice == '1':
+            if register_user(db):
+                save_data(file_path, db)  # 注册成功后保存数据
+        elif choice == '2':
+            if login_user(db):
+                break  # 登录成功则退出循环
+        elif choice == '3':
+            print("再见！")
+            break
+        else:
+            print("无效选择，请重新输入")
+
+if __name__ == "__main__":
+    main()
+
+    #九九乘法表
+print('\n'.join(['\t'.join([f'{i}x{j}={i * j}' for i in range(1,j+1)]) for j in range(1, 10)]))
+
+    
